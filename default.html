@@ -1,0 +1,141 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSmlV3aJGuvtO0qC4Ne75EPyywkr-3fQ0" async defer></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<style>
+table
+{
+	width:100%;
+}
+table,th,td
+{
+	text-align:center;
+	padding:5px;
+	border-bottom:1px solid grey;
+	border-collapse:collapse;
+}
+table#tab tr:nth-child(even)
+{
+	background-color:#F0F0F0;
+}
+table#tab tr:nth-child(odd)
+{
+	background-color:#FCFCFC;
+}
+table#tab th
+{
+	font-size:20px;
+	background-color:#4CAF50;
+	color:white;
+}
+table#tab tr:hover
+{
+background-color: #ddd;
+}
+
+#map
+{
+	float: left;
+	width:480px;
+	height:380px;
+}
+
+#chart
+{
+	float:right;
+}
+
+</style>
+</head>
+
+<body>
+<script type="text/javascript">
+google.load('visualization', '1', {'packages':['columnchart']});
+$(document).ready(function()
+{
+	$("button").click(function()
+	{
+		$.ajax({
+			url: "/data.json",
+			type: "GET",
+			dataType: "json",
+			success: function(data)
+			{
+				button.style.visibility = "hidden";
+				var table="<table id='tab'><caption><h3><strong>Countries With Nuclear Power</strong></h3></caption><th>Country</th><th>Capital</th><th>Latitude</th><th>Longitude</th><th>No. of Reactors</th><th>Capacity(MW)</th><th>Generated(GWh)</th><th>% Share of Domestic Generation</th>";
+				for(var i=0;i<data.length;i++)
+				{
+					table+="<tr><td>"+data[i].country+
+							"</td><td>"+data[i].capital+
+							"</td><td>"+data[i].lat+
+							"</td><td>"+data[i].lng+
+							"</td><td>"+data[i].reactor+
+							"</td><td>"+data[i].capacity+
+							"</td><td>"+data[i].generated+
+							"</td><td>"+data[i].domestic+"</td></tr>";
+				}
+				table+="</table>";
+				$("#table").html(table);
+				
+				var mapDiv = document.getElementById("map");
+				var map = new google.maps.Map(mapDiv,{center:{lat:20,lng:10},zoom:1});
+				var marker,i;
+				for(i=0;i<data.length;i++)
+				{
+					var position = new google.maps.LatLng(data[i].lat,data[i].lng);
+					marker = new google.maps.Marker({position:position,map:map,title:data[i].capital+', '+data[i].country});
+				}
+				
+				var dataTable = new google.visualization.DataTable();
+				dataTable.addColumn("string","Countries");
+				dataTable.addColumn("number", "Power Generated(*10TWh)");
+				dataTable.addColumn("number", "Domestic Percentage");
+				dataTable.addRows([[data[0].country,Number(data[0].generated)/10000,Number(data[0].domestic)],
+									[data[1].country,Number(data[1].generated)/10000,Number(data[1].domestic)],
+									[data[2].country,Number(data[2].generated)/10000,Number(data[2].domestic)],
+									[data[3].country,Number(data[3].generated)/10000,Number(data[3].domestic)],
+									[data[4].country,Number(data[4].generated)/10000,Number(data[4].domestic)],
+									[data[5].country,Number(data[5].generated)/10000,Number(data[5].domestic)],
+									[data[6].country,Number(data[6].generated)/10000,Number(data[6].domestic)],
+									[data[7].country,Number(data[7].generated)/10000,Number(data[7].domestic)],
+									[data[8].country,Number(data[8].generated)/10000,Number(data[8].domestic)],
+									[data[9].country,Number(data[9].generated)/10000,Number(data[9].domestic)],
+									[data[10].country,Number(data[10].generated)/10000,Number(data[10].domestic)],
+									[data[11].country,Number(data[11].generated)/10000,Number(data[11].domestic)],
+									[data[12].country,Number(data[12].generated)/10000,Number(data[12].domestic)],
+									[data[13].country,Number(data[13].generated)/10000,Number(data[13].domestic)],
+									[data[14].country,Number(data[14].generated)/10000,Number(data[14].domestic)],
+									[data[15].country,Number(data[15].generated)/10000,Number(data[15].domestic)],
+									[data[16].country,Number(data[16].generated)/10000,Number(data[16].domestic)],
+									[data[17].country,Number(data[17].generated)/10000,Number(data[17].domestic)],
+									[data[18].country,Number(data[18].generated)/10000,Number(data[18].domestic)],
+									[data[19].country,Number(data[19].generated)/10000,Number(data[19].domestic)],
+									[data[20].country,Number(data[20].generated)/10000,Number(data[20].domestic)],
+									[data[21].country,Number(data[21].generated)/10000,Number(data[21].domestic)],
+									[data[22].country,Number(data[22].generated)/10000,Number(data[22].domestic)],
+									[data[23].country,Number(data[23].generated)/10000,Number(data[23].domestic)],
+									[data[24].country,Number(data[24].generated)/10000,Number(data[24].domestic)],
+									[data[25].country,Number(data[25].generated)/10000,Number(data[25].domestic)],
+									[data[26].country,Number(data[26].generated)/10000,Number(data[26].domestic)],
+									[data[27].country,Number(data[27].generated)/10000,Number(data[27].domestic)],
+									[data[28].country,Number(data[28].generated)/10000,Number(data[28].domestic)],
+									[data[29].country,Number(data[29].generated)/10000,Number(data[29].domestic)],
+									[data[30].country,Number(data[30].generated)/10000,Number(data[30].domestic)]]);
+				var chart = new google.visualization.ColumnChart (document.getElementById('chart'));
+				var options = {width: 850, height: 400, is3D: true, title: 'Nuclear Power Statistics'};
+				chart.draw(dataTable, options);				
+			}
+		});
+	});
+});
+</script>
+
+<div id="table"><center><button id="button">Click</button></center></div>
+<div id="map"></div>
+<div id="chart"></div>
+
+</body>
+</html>
