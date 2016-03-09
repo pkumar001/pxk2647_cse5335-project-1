@@ -43,8 +43,8 @@ $ heroku login
 ```
 > Execute the following commands to clone the application:
 ```sh
-$ git clone https://github.com/premkumar010890/pxk26447_cse5335-project1.git
-$ cd pxk2647_cse5335-project1
+$ git clone https://github.com/premkumar010890/pxk26447_cse5335-project-1.git
+$ cd pxk2647_cse5335-project-1
 ```
 > Create an app on Heroku, which prepares Heroku to receive the source code:
 ```sh
